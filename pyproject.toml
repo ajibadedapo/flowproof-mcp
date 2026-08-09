@@ -1,0 +1,68 @@
+[project]
+name = "flowproof-mcp"
+version = "0.1.0"
+description = "Run reproducible bioinformatics pipelines from an AI assistant over MCP, with verifiable provenance"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Specvista Technology" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "bioinformatics",
+    "genomics",
+    "nextflow",
+    "reproducibility",
+    "provenance",
+    "ro-crate",
+    "pipelines",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Software Development :: Build Tools",
+]
+dependencies = [
+    "mcp>=1.2.0,<2",
+    "starlette>=0.37",
+    "uvicorn>=0.30",
+]
+
+[project.urls]
+Homepage = "https://flowproof.specvista.com"
+Repository = "https://github.com/ajibadedapo/flowproof-mcp"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+flowproof-mcp = "flowproof.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flowproof"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"pipelines" = "flowproof/_pipelines"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/flowproof",
+    "pipelines",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

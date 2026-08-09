@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.flowproof/
+runs/
+work/
+.nextflow/
+.nextflow.log*
+results/
+web/node_modules/
+web/.next/
+node_modules/

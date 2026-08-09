@@ -1,0 +1,15 @@
+.venv/
+work/
+.nextflow/
+.nextflow.log*
+results/
+runs/
+.flowproof/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+tests/
+uv.lock

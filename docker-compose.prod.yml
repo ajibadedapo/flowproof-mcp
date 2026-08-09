@@ -1,0 +1,50 @@
+name: flowproof
+
+services:
+  flowproof:
+    image: ghcr.io/dormdeveloper/flowproof:latest
+    container_name: flowproof
+    restart: unless-stopped
+    environment:
+      FLOWPROOF_TRANSPORT: http
+      FLOWPROOF_HOST: "0.0.0.0"
+      FLOWPROOF_PORT: "8000"
+      FLOWPROOF_RUNS_DIR: /data/runs
+      FLOWPROOF_API_TOKEN: ${FLOWPROOF_API_TOKEN}
+      FLOWPROOF_CORS_ORIGINS: https://app.flowproof.specvista.com
+      VIRTUAL_HOST: flowproof.specvista.com
+      VIRTUAL_PORT: "8000"
+      LETSENCRYPT_HOST: flowproof.specvista.com
+    volumes:
+      - flowproof-runs:/data/runs
+    networks:
+      - default
+      - nginx-proxy
+    ports:
+      - "8010:8000"
+
+  flowproof-web:
+    image: ghcr.io/dormdeveloper/flowproof-web:latest
+    container_name: flowproof-web
+    restart: unless-stopped
+    environment:
+      HOSTNAME: "0.0.0.0"
+      VIRTUAL_HOST: app.flowproof.specvista.com
+      VIRTUAL_PORT: "3040"
+      LETSENCRYPT_HOST: app.flowproof.specvista.com
+    networks:
+      - default
+      - nginx-proxy
+    ports:
+      - "3041:3040"
+
+volumes:
+  flowproof-runs:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
+  nginx-proxy:
+    external: true
