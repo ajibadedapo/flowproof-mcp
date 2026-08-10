@@ -15,9 +15,8 @@ jobs:
         uses: astral-sh/setup-uv@v5
       - name: Set up Python
         run: uv python install 3.12
-      - name: Install
-        run: uv pip install --system --break-system-packages .
-      - name: Install test deps
-        run: uv pip install --system --break-system-packages pytest
-      - name: Run tests
-        run: PYTHONPATH=src python -m pytest tests/ -q
+      - name: Install and test
+        run: |
+          uv venv
+          uv pip install . pytest
+          uv run pytest tests/ -q
