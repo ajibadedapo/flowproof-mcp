@@ -16,6 +16,25 @@ def test_registry_has_seed_pipelines():
     assert {"variant-call-short", "assembly-ont"} <= ids
 
 
+def test_registry_has_nf_core_pipelines():
+    ids = {m.id for m in registry.list()}
+    assert {"rnaseq", "fetchngs", "viralrecon"} <= ids
+
+
+def test_all_pipelines_build_safe_nextflow_commands(tmp_path: Path):
+    backend = NextflowBackend()
+    dummy = {
+        "rnaseq": ({"samplesheet": "s.csv"}, {"genome": "GRCh38", "aligner": "star_salmon"}),
+        "fetchngs": ({"ids": "ids.csv"}, {"nf_core_pipeline": "rnaseq"}),
+        "viralrecon": ({"samplesheet": "s.csv"}, {"platform": "illumina", "protocol": "amplicon", "genome": "MN908947.3"}),
+    }
+    for pid, (inputs, params) in dummy.items():
+        manifest = registry.get(pid)
+        command = backend.build_command(manifest, tmp_path, inputs, params)
+        assert command[0] == "nextflow"
+        assert all(isinstance(token, str) and token for token in command)
+
+
 def test_describe_has_short_and_long():
     read_types = {m.id: m.read_type.value for m in registry.list()}
     assert read_types["variant-call-short"] == "short"
