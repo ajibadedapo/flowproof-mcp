@@ -16,7 +16,7 @@ An AI that "runs an analysis for you" is only useful if you can trust the result
 
 ## Status
 
-v1 scaffold. The core (pipeline registry, execution backends, provenance) is complete and tested. The MCP server exposes six tools. A mock backend runs without Nextflow for development and CI; the Nextflow backend runs real pipelines.
+FlowProof is working and installable today (`pip install flowproof-mcp`). The pipeline registry, execution backends, and RO-Crate provenance are complete and covered by tests, and the MCP server exposes six tools (list, describe, run, status, results, provenance). It ships with two execution backends: a zero-dependency backend for development and CI, and a Nextflow backend that runs real pipelines.
 
 ## Install
 

@@ -3,8 +3,10 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from typing import Annotated
 
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 from .runner import MockBackend, NextflowBackend
 from .service import RunManager
@@ -19,7 +21,13 @@ manager = RunManager(
 )
 
 
-@app.tool()
+@app.tool(
+    description=(
+        "List the available bioinformatics pipelines. Returns each pipeline's id, "
+        "a short description, and its read_type (short-read or long-read). Call this "
+        "first to discover what can be run, then describe_pipeline for details."
+    )
+)
 def list_pipelines() -> list[dict]:
     return [
         {"id": m.id, "description": m.description, "read_type": m.read_type.value}
@@ -27,8 +35,18 @@ def list_pipelines() -> list[dict]:
     ]
 
 
-@app.tool()
-def describe_pipeline(pipeline_id: str) -> dict:
+@app.tool(
+    description=(
+        "Return the full manifest for one pipeline: its required inputs, tunable "
+        "parameters, container image, and output file patterns. Call this before "
+        "run_pipeline to learn exactly which inputs and params it expects."
+    )
+)
+def describe_pipeline(
+    pipeline_id: Annotated[
+        str, Field(description="The pipeline id, as returned by list_pipelines.")
+    ],
+) -> dict:
     m = manager.registry.get(pipeline_id)
     return {
         "id": m.id,
@@ -47,24 +65,53 @@ def describe_pipeline(pipeline_id: str) -> dict:
     }
 
 
-@app.tool()
+@app.tool(
+    description=(
+        "Start a pipeline run and return a run_id to track it. Provide inputs (a map "
+        "of input name to file path or value) and params (a map of parameter name to "
+        "value), as described by describe_pipeline. The run executes asynchronously; "
+        "poll get_run_status, then fetch get_results and get_provenance when it completes."
+    )
+)
 def run_pipeline(
-    pipeline_id: str,
-    inputs: dict[str, str] | None = None,
-    params: dict[str, str] | None = None,
+    pipeline_id: Annotated[
+        str, Field(description="The pipeline id to run, from list_pipelines.")
+    ],
+    inputs: Annotated[
+        dict[str, str] | None,
+        Field(description="Map of input name to file path or value, per describe_pipeline."),
+    ] = None,
+    params: Annotated[
+        dict[str, str] | None,
+        Field(description="Map of parameter name to value, per describe_pipeline."),
+    ] = None,
 ) -> dict:
     record = manager.start_run(pipeline_id, inputs, params)
     return {"run_id": record.run_id, "status": record.status.value}
 
 
-@app.tool()
-def get_run_status(run_id: str) -> dict:
+@app.tool(
+    description=(
+        "Get the current status of a run (queued, running, succeeded, or failed) by "
+        "its run_id, as returned by run_pipeline."
+    )
+)
+def get_run_status(
+    run_id: Annotated[str, Field(description="The run id returned by run_pipeline.")],
+) -> dict:
     record = manager.get(run_id)
     return {"run_id": run_id, "status": record.status.value}
 
 
-@app.tool()
-def get_results(run_id: str) -> dict:
+@app.tool(
+    description=(
+        "Get the outputs of a run: each output file with its SHA-256 checksum and size "
+        "in bytes, plus the run status. Use the checksums to verify results independently."
+    )
+)
+def get_results(
+    run_id: Annotated[str, Field(description="The run id returned by run_pipeline.")],
+) -> dict:
     record = manager.get(run_id)
     result = record.result
     files = (
@@ -78,8 +125,16 @@ def get_results(run_id: str) -> dict:
     return {"run_id": run_id, "status": record.status.value, "outputs": files}
 
 
-@app.tool()
-def get_provenance(run_id: str) -> dict:
+@app.tool(
+    description=(
+        "Get the Workflow Run RO-Crate provenance for a run: workflow version, container "
+        "digests, tool versions, parameters, and input/output SHA-256 checksums, the full "
+        "record needed to reproduce the run byte-for-byte."
+    )
+)
+def get_provenance(
+    run_id: Annotated[str, Field(description="The run id returned by run_pipeline.")],
+) -> dict:
     record = manager.get(run_id)
     if not record.provenance_path:
         return {"run_id": run_id, "provenance": None}
