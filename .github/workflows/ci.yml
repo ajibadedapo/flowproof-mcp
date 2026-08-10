@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install
+        run: uv pip install --system --break-system-packages .
+      - name: Install test deps
+        run: uv pip install --system --break-system-packages pytest
+      - name: Run tests
+        run: PYTHONPATH=src python -m pytest tests/ -q
