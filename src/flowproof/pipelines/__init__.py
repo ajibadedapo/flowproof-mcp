@@ -24,8 +24,8 @@ VARIANT_CALL_SHORT = PipelineManifest(
 )
 
 ASSEMBLY_ONT = PipelineManifest(
-    id="assembly-ont",
-    description="Oxford Nanopore long-read de novo assembly",
+    id="ont-read-stats",
+    description="Oxford Nanopore long-read read statistics (QC); optional Flye assembly stage",
     read_type=ReadType.LONG,
     inputs=(
         PipelineInput("reads", "Oxford Nanopore long-read FASTQ. Omit to use the built-in demo sample."),

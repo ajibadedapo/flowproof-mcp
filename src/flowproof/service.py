@@ -32,7 +32,7 @@ class RunManager:
         resolved = {p.name: p.default for p in manifest.params if p.default is not None}
         resolved.update(params or {})
         resolved_inputs = dict(inputs or {})
-        if pipeline_id == "assembly-ont" and not resolved_inputs.get("reads") and DEFAULT_SAMPLE:
+        if pipeline_id == "ont-read-stats" and not resolved_inputs.get("reads") and DEFAULT_SAMPLE:
             resolved_inputs["reads"] = str(DEFAULT_SAMPLE)
         run_id = uuid.uuid4().hex[:12]
         run_dir = self.base_dir / run_id

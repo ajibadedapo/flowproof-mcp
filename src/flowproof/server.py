@@ -94,8 +94,16 @@ def run_pipeline(
             f"'{pipeline_id}' needs local compute (large nf-core workflow plus reference data) "
             "and does not run on the hosted demo. Run it where your data lives: "
             "`uvx flowproof-mcp` (data stays on your machine, no token). "
-            "The hosted service runs 'assembly-ont' for real."
+            "The hosted service runs 'ont-read-stats' for real."
         )
+    if _HOSTED and inputs:
+        for name, value in inputs.items():
+            if "/" in value or "\\" in value:
+                raise ValueError(
+                    f"The hosted demo does not accept file paths (input '{name}'). "
+                    "It runs 'ont-read-stats' on a built-in sample only. "
+                    "To run on your own data, use local mode: `uvx flowproof-mcp`."
+                )
     record = manager.start_run(pipeline_id, inputs, params)
     return {"run_id": record.run_id, "status": record.status.value}
 

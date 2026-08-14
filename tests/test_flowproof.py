@@ -14,7 +14,7 @@ from flowproof.runner import MockBackend, NextflowBackend, UnsafeValue
 
 def test_registry_has_seed_pipelines():
     ids = {m.id for m in registry.list()}
-    assert {"variant-call-short", "assembly-ont"} <= ids
+    assert {"variant-call-short", "ont-read-stats"} <= ids
 
 
 def test_registry_has_nf_core_pipelines():
@@ -39,7 +39,7 @@ def test_all_pipelines_build_safe_nextflow_commands(tmp_path: Path):
 def test_describe_has_short_and_long():
     read_types = {m.id: m.read_type.value for m in registry.list()}
     assert read_types["variant-call-short"] == "short"
-    assert read_types["assembly-ont"] == "long"
+    assert read_types["ont-read-stats"] == "long"
 
 
 def test_mock_run_succeeds_and_emits_outputs(tmp_path: Path):
@@ -63,7 +63,7 @@ def test_defaults_are_applied(tmp_path: Path):
 
 def test_output_checksums_are_real(tmp_path: Path):
     manager = RunManager(tmp_path, backend=MockBackend())
-    record = manager.start_run("assembly-ont", inputs={"reads": "ont.fastq"})
+    record = manager.start_run("ont-read-stats", inputs={"reads": "ont.fastq"})
     output = record.result.output_files[0]
     on_disk = Path(record.run_dir) / output.path
     assert sha256_file(on_disk) == output.sha256
@@ -99,13 +99,13 @@ def test_space_injection_cannot_add_arguments(tmp_path: Path):
 
 def test_provenance_crate_is_valid(tmp_path: Path):
     manager = RunManager(tmp_path, backend=MockBackend())
-    record = manager.start_run("assembly-ont", inputs={"reads": "ont.fastq"})
+    record = manager.start_run("ont-read-stats", inputs={"reads": "ont.fastq"})
     crate = json.loads(Path(record.provenance_path).read_text())
     assert "@graph" in crate
     ids = {node["@id"] for node in crate["@graph"]}
-    assert "assembly-ont" in ids
+    assert "ont-read-stats" in ids
     assert f"#run-{record.run_id}" in ids
-    workflow = next(n for n in crate["@graph"] if n["@id"] == "assembly-ont")
+    workflow = next(n for n in crate["@graph"] if n["@id"] == "ont-read-stats")
     assert "ComputationalWorkflow" in workflow["@type"]
     outputs = [n for n in crate["@graph"] if n.get("@type") == "File" and "sha256" in n]
     assert any(n["sha256"] == record.result.output_files[0].sha256 for n in outputs)
@@ -140,12 +140,12 @@ def test_provenance_receipt_rejects_unlinked_hashes():
             {
                 "@id": "#run-demo",
                 "@type": "CreateAction",
-                "instrument": {"@id": "assembly-ont"},
+                "instrument": {"@id": "ont-read-stats"},
                 "actionStatus": "http://schema.org/CompletedActionStatus",
                 "result": [{"@id": "results/expected.txt"}],
             },
             {
-                "@id": "assembly-ont",
+                "@id": "ont-read-stats",
                 "@type": ["File", "ComputationalWorkflow"],
             },
             {
@@ -178,12 +178,12 @@ def test_provenance_receipt_rejects_output_missing_from_dataset():
             {
                 "@id": "#run-demo",
                 "@type": "CreateAction",
-                "instrument": {"@id": "assembly-ont"},
+                "instrument": {"@id": "ont-read-stats"},
                 "actionStatus": "http://schema.org/CompletedActionStatus",
                 "result": [{"@id": "results/expected.txt"}],
             },
             {
-                "@id": "assembly-ont",
+                "@id": "ont-read-stats",
                 "@type": ["File", "ComputationalWorkflow"],
             },
             {
@@ -216,12 +216,12 @@ def test_provenance_receipt_rejects_duplicate_run_output_entities():
             {
                 "@id": "#run-demo",
                 "@type": "CreateAction",
-                "instrument": {"@id": "assembly-ont"},
+                "instrument": {"@id": "ont-read-stats"},
                 "actionStatus": "http://schema.org/CompletedActionStatus",
                 "result": [{"@id": "results/expected.txt"}],
             },
             {
-                "@id": "assembly-ont",
+                "@id": "ont-read-stats",
                 "@type": ["File", "ComputationalWorkflow"],
             },
             {
@@ -260,11 +260,11 @@ def test_provenance_receipt_rejects_missing_run_status():
             {
                 "@id": "#run-demo",
                 "@type": "CreateAction",
-                "instrument": {"@id": "assembly-ont"},
+                "instrument": {"@id": "ont-read-stats"},
                 "result": [{"@id": "results/expected.txt"}],
             },
             {
-                "@id": "assembly-ont",
+                "@id": "ont-read-stats",
                 "@type": ["File", "ComputationalWorkflow"],
             },
             {
@@ -302,7 +302,7 @@ def test_provenance_receipt_rejects_unlinked_workflow():
                 "result": [{"@id": "results/expected.txt"}],
             },
             {
-                "@id": "assembly-ont",
+                "@id": "ont-read-stats",
                 "@type": ["File", "ComputationalWorkflow"],
             },
             {
@@ -331,7 +331,7 @@ TESTDATA = Path(__file__).resolve().parents[1] / "testdata" / "ont_sample.fastq"
 @pytest.mark.skipif(NEXTFLOW is None, reason="nextflow not installed")
 def test_real_nextflow_run_end_to_end(tmp_path: Path):
     manager = RunManager(tmp_path, backend=NextflowBackend(profile="standard"))
-    record = manager.start_run("assembly-ont", inputs={"reads": str(TESTDATA)})
+    record = manager.start_run("ont-read-stats", inputs={"reads": str(TESTDATA)})
     assert record.status is RunStatus.SUCCEEDED, record.result.log if record.result else "no result"
     paths = [f.path for f in record.result.output_files]
     assert any("read_stats.txt" in p for p in paths)

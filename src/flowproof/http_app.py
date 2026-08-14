@@ -71,7 +71,7 @@ async def health(_: Request) -> JSONResponse:
                     "create an account",
                     "generate an API key",
                     "add the MCP endpoint to the AI client",
-                    "run the assembly-ont pipeline with source data outside the chat transcript",
+                    "run the ont-read-stats pipeline with source data outside the chat transcript",
                     "keep large or sensitive reference data in the local research environment",
                     "review the provenance bundle before sharing results",
                 ],

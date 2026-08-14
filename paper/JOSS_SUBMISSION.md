@@ -31,7 +31,7 @@ The Journal of Open Source Software (JOSS) publishes short, peer-reviewed papers
 3. Provide:
    - **Repository URL**: `https://github.com/ajibadedapo/flowproof-mcp`
    - **Branch** (if the paper isn't on the default branch)
-   - **Version**: `v0.1.1`
+   - **Version**: `v0.1.0`
 4. The Editorial Bot compiles `paper.md` into a PDF, check it renders correctly (fix `paper.md`/`paper.bib` and it recompiles).
 5. An editor does a **pre-review scope check** (this is where the "substantial effort" judgement happens). If accepted into review, reviewers work through a checklist (installs cleanly, tests run, docs adequate, statement of need clear, functionality claims true).
 6. You respond to reviewer issues on GitHub. On acceptance you archive a release (Zenodo) and JOSS mints the DOI.

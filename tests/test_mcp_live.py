@@ -36,18 +36,18 @@ async def _drive(runs_dir: Path) -> dict:
 
             listed = await session.call_tool("list_pipelines", {})
             described = await session.call_tool(
-                "describe_pipeline", {"pipeline_id": "assembly-ont"}
+                "describe_pipeline", {"pipeline_id": "ont-read-stats"}
             )
             run = await session.call_tool(
                 "run_pipeline",
-                {"pipeline_id": "assembly-ont", "inputs": {"reads": str(TESTDATA)}},
+                {"pipeline_id": "ont-read-stats", "inputs": {"reads": str(TESTDATA)}},
             )
             run_payload = json.loads(run.content[0].text)
             run_id = run_payload["run_id"]
             prov = await session.call_tool("get_provenance", {"run_id": run_id})
             return {
                 "tool_names": tool_names,
-                "listed": listed.content[0].text,
+                "listed": "".join(getattr(c, "text", "") for c in listed.content),
                 "described": described.content[0].text,
                 "run_status": run_payload["status"],
                 "provenance": prov.content[0].text,
@@ -66,9 +66,9 @@ def test_mcp_server_exposes_and_runs_tools(tmp_path: Path):
         "get_results",
         "get_provenance",
     } <= result["tool_names"]
-    assert "assembly-ont" in result["listed"]
+    assert "ont-read-stats" in result["listed"]
     assert "genome_size" in result["described"]
     assert result["run_status"] == "succeeded"
     prov = json.loads(result["provenance"])["provenance"]
     ids = {node["@id"] for node in prov["@graph"]}
-    assert "assembly-ont" in ids
+    assert "ont-read-stats" in ids

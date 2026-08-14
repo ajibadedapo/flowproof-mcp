@@ -1,0 +1,72 @@
+{
+  "_comment": [
+    "Corpus for experiment R5 in REPRODUCIBILITY.md. Every entry must be",
+    "REJECTED at the validation boundary, and its content must not appear in",
+    "the constructed argument vector. Record the outcome per entry, not just",
+    "an aggregate, so the paper can report which class (if any) got through.",
+    "Add cases as you find them. A class with no failures after you have",
+    "tried hard to break it is a result worth reporting."
+  ],
+  "classes": {
+    "shell_metacharacters": [
+      "sample.fastq; rm -rf /tmp/flowproof-canary",
+      "sample.fastq && touch /tmp/flowproof-canary",
+      "sample.fastq | tee /tmp/flowproof-canary",
+      "$(touch /tmp/flowproof-canary)",
+      "`touch /tmp/flowproof-canary`",
+      "sample.fastq\n touch /tmp/flowproof-canary",
+      "${IFS}touch${IFS}/tmp/flowproof-canary",
+      "sample.fastq' ; echo pwned ; '"
+    ],
+    "path_traversal": [
+      "../../../../etc/passwd",
+      "..%2f..%2f..%2fetc%2fpasswd",
+      "/etc/shadow",
+      "~/.ssh/id_ed25519",
+      "results/../../../root/.aws/credentials",
+      "./valid/../../outside.fastq",
+      "/proc/self/environ",
+      "\\\\server\\share\\file.fastq"
+    ],
+    "flag_injection": [
+      "--outdir=/etc",
+      "-with-docker=attacker/image:latest",
+      "--params-file=/tmp/evil.yml",
+      "-c /tmp/evil.config",
+      "-resume",
+      "--input /etc/passwd --input sample.fastq",
+      "-plugins nf-attacker@1.0.0"
+    ],
+    "bounds": [
+      "A_VERY_LONG_VALUE_REPEAT_ME_16384_TIMES",
+      "-1",
+      "0",
+      "999999999999999999999",
+      "1e309",
+      "NaN",
+      "0x10",
+      "  12  "
+    ],
+    "enumeration": [
+      "DNA_or_RNA",
+      "dna",
+      "RNA;DNA",
+      "",
+      "null",
+      "None",
+      "true"
+    ],
+    "encoding": [
+      "sample.fastq\u0000.txt",
+      "sample.fastq\r\n--outdir /etc",
+      "sample\u202efastq.exe",
+      "\ufeffsample.fastq",
+      "sample\u00a0.fastq",
+      "ｓample.fastq",
+      "sample.fastq%00"
+    ]
+  },
+  "expected_outcome": "rejected_before_command_assembly",
+  "canary_path": "/tmp/flowproof-canary",
+  "canary_note": "Assert this path does not exist after the whole corpus has run. If it exists, at least one payload reached a shell."
+}

@@ -46,12 +46,23 @@ def build_crate(
         ],
     }
 
+    parameter_values = [
+        {
+            "@id": f"#param-{name}",
+            "@type": "PropertyValue",
+            "name": name,
+            "value": value,
+        }
+        for name, value in sorted(record.params.items())
+    ]
+
     run_action = {
         "@id": f"#run-{record.run_id}",
         "@type": "CreateAction",
         "name": f"FlowProof run of {manifest.id}",
         "instrument": {"@id": manifest.id},
-        "object": [{"@id": e["@id"]} for e in input_entities],
+        "object": [{"@id": e["@id"]} for e in input_entities]
+        + [{"@id": p["@id"]} for p in parameter_values],
         "result": [{"@id": e["@id"]} for e in output_entities],
         "actionStatus": (
             "http://schema.org/CompletedActionStatus"
@@ -85,6 +96,7 @@ def build_crate(
         *tools,
         *input_entities,
         *output_entities,
+        *parameter_values,
     ]
 
     return {"@context": RO_CRATE_SPEC + "/context", "@graph": graph}

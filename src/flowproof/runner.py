@@ -18,7 +18,7 @@ class UnsafeValue(ValueError):
 
 
 def validate_value(name: str, value: str) -> str:
-    if not _SAFE_VALUE.fullmatch(value) or value.startswith("-"):
+    if not _SAFE_VALUE.fullmatch(value) or value.startswith("-") or ".." in value:
         raise UnsafeValue(f"{name}={value!r} is not an allowed pipeline value")
     return value
 
