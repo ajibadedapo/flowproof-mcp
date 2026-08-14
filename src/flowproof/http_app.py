@@ -43,7 +43,42 @@ class BearerAuthMiddleware(BaseHTTPMiddleware):
 
 
 async def health(_: Request) -> JSONResponse:
-    return JSONResponse({"status": "ok", "service": "flowproof"})
+    return JSONResponse(
+        {
+            "status": "ok",
+            "service": "flowproof",
+            "api": "public",
+            "mcp": {"endpoint": "/mcp/", "auth": "bearer-key-required"},
+            "provenance": "workflow-run-ro-crate",
+            "provenanceReceipt": {
+                "verifier": "run-linked dataset outputs",
+                "checks": [
+                    "run action present",
+                    "run status present",
+                    "hashed outputs present",
+                    "hashed outputs linked from the run",
+                    "run-linked outputs listed in the dataset",
+                    "run output ids are unique",
+                    "workflow entity present",
+                    "workflow linked from the run",
+                ],
+            },
+            "claimBoundary": "research reproducibility only, not clinical or diagnostic validation",
+            "hostedDemoBoundary": "lightweight demo runs only, reference data stays in the user's environment",
+            "firstRun": {
+                "audience": "research teams connecting an AI client to reproducible pipeline runs",
+                "steps": [
+                    "create an account",
+                    "generate an API key",
+                    "add the MCP endpoint to the AI client",
+                    "run the assembly-ont pipeline with source data outside the chat transcript",
+                    "keep large or sensitive reference data in the local research environment",
+                    "review the provenance bundle before sharing results",
+                ],
+                "proof": "health endpoint exposes auth, MCP, provenance receipt checks, and claim-boundary readiness",
+            },
+        }
+    )
 
 
 def _store(request: Request) -> AuthStore:

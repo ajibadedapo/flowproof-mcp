@@ -100,3 +100,96 @@ def write_provenance(
     path = run_dir / "ro-crate-metadata.json"
     path.write_text(json.dumps(crate, indent=2) + "\n")
     return path
+
+
+def verify_crate(crate: dict) -> dict:
+    graph = crate.get("@graph", [])
+    if not isinstance(graph, list):
+        return {
+            "valid": False,
+            "missing": ["@graph"],
+            "outputs": 0,
+            "linkedOutputs": 0,
+            "datasetLinkedOutputs": 0,
+        }
+
+    run_actions = [
+        node for node in graph
+        if node.get("@type") == "CreateAction" and str(node.get("@id", "")).startswith("#run-")
+    ]
+    terminal_statuses = {
+        "http://schema.org/CompletedActionStatus",
+        "http://schema.org/FailedActionStatus",
+    }
+    run_statuses = [
+        action.get("actionStatus")
+        for action in run_actions
+        if action.get("actionStatus") in terminal_statuses
+    ]
+    run_instrument_ids = {
+        action.get("instrument", {}).get("@id")
+        for action in run_actions
+        if isinstance(action.get("instrument"), dict) and action.get("instrument", {}).get("@id")
+    }
+    output_ids = {
+        item.get("@id")
+        for action in run_actions
+        for item in action.get("result", [])
+        if isinstance(item, dict) and item.get("@id")
+    }
+    dataset_part_ids = {
+        item.get("@id")
+        for node in graph
+        if node.get("@id") == "./" and node.get("@type") == "Dataset"
+        for item in node.get("hasPart", [])
+        if isinstance(item, dict) and item.get("@id")
+    }
+    outputs = [
+        node for node in graph
+        if node.get("@type") == "File" and node.get("sha256") and node.get("contentSize") is not None
+    ]
+    linked_outputs = [node for node in outputs if node.get("@id") in output_ids]
+    dataset_linked_outputs = [
+        node for node in linked_outputs if node.get("@id") in dataset_part_ids
+    ]
+    linked_output_ids = [node.get("@id") for node in linked_outputs]
+    duplicate_linked_output_ids = {
+        output_id
+        for output_id in linked_output_ids
+        if output_id and linked_output_ids.count(output_id) > 1
+    }
+    workflow = [
+        node for node in graph
+        if isinstance(node.get("@type"), list) and "ComputationalWorkflow" in node.get("@type", [])
+    ]
+    workflow_ids = {node.get("@id") for node in workflow if node.get("@id")}
+    missing = []
+    if not run_actions:
+        missing.append("run action")
+    if run_actions and len(run_statuses) != len(run_actions):
+        missing.append("run status")
+    if not outputs:
+        missing.append("hashed outputs")
+    if outputs and not linked_outputs:
+        missing.append("run-linked hashed outputs")
+    if duplicate_linked_output_ids:
+        missing.append("unique run outputs")
+    if linked_outputs and len(dataset_linked_outputs) != len(linked_outputs):
+        missing.append("dataset-linked run outputs")
+    if not workflow:
+        missing.append("workflow")
+    if workflow and run_actions and not (workflow_ids & run_instrument_ids):
+        missing.append("run-linked workflow")
+    return {
+        "valid": not missing,
+        "missing": missing,
+        "outputs": len(outputs),
+        "linkedOutputs": len(linked_outputs),
+        "datasetLinkedOutputs": len(dataset_linked_outputs),
+        "runStatusPresent": len(run_statuses) == len(run_actions) if run_actions else False,
+        "workflowLinked": bool(workflow_ids & run_instrument_ids) if workflow and run_actions else False,
+    }
+
+
+def verify_provenance_path(path: Path) -> dict:
+    return verify_crate(json.loads(path.read_text()))

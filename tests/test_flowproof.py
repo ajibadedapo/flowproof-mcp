@@ -8,6 +8,7 @@ import pytest
 
 from flowproof import RunManager, RunStatus, registry
 from flowproof.hashing import sha256_file
+from flowproof.provenance import verify_crate, verify_provenance_path
 from flowproof.runner import MockBackend, NextflowBackend, UnsafeValue
 
 
@@ -108,6 +109,219 @@ def test_provenance_crate_is_valid(tmp_path: Path):
     assert "ComputationalWorkflow" in workflow["@type"]
     outputs = [n for n in crate["@graph"] if n.get("@type") == "File" and "sha256" in n]
     assert any(n["sha256"] == record.result.output_files[0].sha256 for n in outputs)
+    receipt = verify_crate(crate)
+    assert receipt == {
+        "valid": True,
+        "missing": [],
+        "outputs": len(outputs),
+        "linkedOutputs": len(record.result.output_files),
+        "datasetLinkedOutputs": len(record.result.output_files),
+        "runStatusPresent": True,
+        "workflowLinked": True,
+    }
+    assert verify_provenance_path(Path(record.provenance_path)) == receipt
+
+
+def test_provenance_receipt_rejects_incomplete_crate():
+    assert verify_crate({"@graph": [{"@id": "./", "@type": "Dataset"}]}) == {
+        "valid": False,
+        "missing": ["run action", "hashed outputs", "workflow"],
+        "outputs": 0,
+        "linkedOutputs": 0,
+        "datasetLinkedOutputs": 0,
+        "runStatusPresent": False,
+        "workflowLinked": False,
+    }
+
+
+def test_provenance_receipt_rejects_unlinked_hashes():
+    crate = {
+        "@graph": [
+            {
+                "@id": "#run-demo",
+                "@type": "CreateAction",
+                "instrument": {"@id": "assembly-ont"},
+                "actionStatus": "http://schema.org/CompletedActionStatus",
+                "result": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "assembly-ont",
+                "@type": ["File", "ComputationalWorkflow"],
+            },
+            {
+                "@id": "results/other.txt",
+                "@type": "File",
+                "sha256": "abc",
+                "contentSize": 3,
+            },
+        ]
+    }
+    assert verify_crate(crate) == {
+        "valid": False,
+        "missing": ["run-linked hashed outputs"],
+        "outputs": 1,
+        "linkedOutputs": 0,
+        "datasetLinkedOutputs": 0,
+        "runStatusPresent": True,
+        "workflowLinked": True,
+    }
+
+
+def test_provenance_receipt_rejects_output_missing_from_dataset():
+    crate = {
+        "@graph": [
+            {
+                "@id": "./",
+                "@type": "Dataset",
+                "hasPart": [],
+            },
+            {
+                "@id": "#run-demo",
+                "@type": "CreateAction",
+                "instrument": {"@id": "assembly-ont"},
+                "actionStatus": "http://schema.org/CompletedActionStatus",
+                "result": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "assembly-ont",
+                "@type": ["File", "ComputationalWorkflow"],
+            },
+            {
+                "@id": "results/expected.txt",
+                "@type": "File",
+                "sha256": "abc",
+                "contentSize": 3,
+            },
+        ]
+    }
+    assert verify_crate(crate) == {
+        "valid": False,
+        "missing": ["dataset-linked run outputs"],
+        "outputs": 1,
+        "linkedOutputs": 1,
+        "datasetLinkedOutputs": 0,
+        "runStatusPresent": True,
+        "workflowLinked": True,
+    }
+
+
+def test_provenance_receipt_rejects_duplicate_run_output_entities():
+    crate = {
+        "@graph": [
+            {
+                "@id": "./",
+                "@type": "Dataset",
+                "hasPart": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "#run-demo",
+                "@type": "CreateAction",
+                "instrument": {"@id": "assembly-ont"},
+                "actionStatus": "http://schema.org/CompletedActionStatus",
+                "result": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "assembly-ont",
+                "@type": ["File", "ComputationalWorkflow"],
+            },
+            {
+                "@id": "results/expected.txt",
+                "@type": "File",
+                "sha256": "abc",
+                "contentSize": 3,
+            },
+            {
+                "@id": "results/expected.txt",
+                "@type": "File",
+                "sha256": "def",
+                "contentSize": 3,
+            },
+        ]
+    }
+    assert verify_crate(crate) == {
+        "valid": False,
+        "missing": ["unique run outputs"],
+        "outputs": 2,
+        "linkedOutputs": 2,
+        "datasetLinkedOutputs": 2,
+        "runStatusPresent": True,
+        "workflowLinked": True,
+    }
+
+
+def test_provenance_receipt_rejects_missing_run_status():
+    crate = {
+        "@graph": [
+            {
+                "@id": "./",
+                "@type": "Dataset",
+                "hasPart": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "#run-demo",
+                "@type": "CreateAction",
+                "instrument": {"@id": "assembly-ont"},
+                "result": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "assembly-ont",
+                "@type": ["File", "ComputationalWorkflow"],
+            },
+            {
+                "@id": "results/expected.txt",
+                "@type": "File",
+                "sha256": "abc",
+                "contentSize": 3,
+            },
+        ]
+    }
+    assert verify_crate(crate) == {
+        "valid": False,
+        "missing": ["run status"],
+        "outputs": 1,
+        "linkedOutputs": 1,
+        "datasetLinkedOutputs": 1,
+        "runStatusPresent": False,
+        "workflowLinked": True,
+    }
+
+
+def test_provenance_receipt_rejects_unlinked_workflow():
+    crate = {
+        "@graph": [
+            {
+                "@id": "./",
+                "@type": "Dataset",
+                "hasPart": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "#run-demo",
+                "@type": "CreateAction",
+                "instrument": {"@id": "other-workflow"},
+                "actionStatus": "http://schema.org/CompletedActionStatus",
+                "result": [{"@id": "results/expected.txt"}],
+            },
+            {
+                "@id": "assembly-ont",
+                "@type": ["File", "ComputationalWorkflow"],
+            },
+            {
+                "@id": "results/expected.txt",
+                "@type": "File",
+                "sha256": "abc",
+                "contentSize": 3,
+            },
+        ]
+    }
+    assert verify_crate(crate) == {
+        "valid": False,
+        "missing": ["run-linked workflow"],
+        "outputs": 1,
+        "linkedOutputs": 1,
+        "datasetLinkedOutputs": 1,
+        "runStatusPresent": True,
+        "workflowLinked": False,
+    }
 
 
 NEXTFLOW = shutil.which("nextflow")

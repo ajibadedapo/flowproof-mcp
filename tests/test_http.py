@@ -35,6 +35,21 @@ def test_health_is_public_even_with_token():
         r = client.get("/health")
         assert r.status_code == 200
         assert r.json()["service"] == "flowproof"
+        assert r.json()["mcp"]["auth"] == "bearer-key-required"
+        assert r.json()["provenance"] == "workflow-run-ro-crate"
+        assert r.json()["provenanceReceipt"]["checks"] == [
+            "run action present",
+            "run status present",
+            "hashed outputs present",
+            "hashed outputs linked from the run",
+            "run-linked outputs listed in the dataset",
+            "run output ids are unique",
+            "workflow entity present",
+            "workflow linked from the run",
+        ]
+        assert "diagnostic" in r.json()["claimBoundary"]
+        assert r.json()["firstRun"]["steps"][0] == "create an account"
+        assert "provenance bundle" in r.json()["firstRun"]["steps"][-1]
 
 
 def test_protected_route_rejects_missing_token():
@@ -86,4 +101,6 @@ def test_real_app_exposes_health(monkeypatch):
     from flowproof.http_app import build_app
 
     with TestClient(build_app()) as client:
-        assert client.get("/health").status_code == 200
+        r = client.get("/health")
+        assert r.status_code == 200
+        assert r.json()["mcp"]["endpoint"] == "/mcp/"
