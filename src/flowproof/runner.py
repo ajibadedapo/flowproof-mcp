@@ -95,6 +95,20 @@ def _default_pipeline_dir() -> Path:
 DEFAULT_PIPELINE_DIR = _default_pipeline_dir()
 
 
+def _default_sample() -> Path | None:
+    candidates = (
+        DEFAULT_PIPELINE_DIR / "assembly-ont" / "ont_sample.fastq",
+        Path(__file__).resolve().parents[2] / "testdata" / "ont_sample.fastq",
+    )
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+DEFAULT_SAMPLE = _default_sample()
+
+
 class NextflowBackend:
     def __init__(
         self,

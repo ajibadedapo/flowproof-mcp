@@ -28,7 +28,7 @@ ASSEMBLY_ONT = PipelineManifest(
     description="Oxford Nanopore long-read de novo assembly",
     read_type=ReadType.LONG,
     inputs=(
-        PipelineInput("reads", "Oxford Nanopore long-read FASTQ"),
+        PipelineInput("reads", "Oxford Nanopore long-read FASTQ. Omit to use the built-in demo sample."),
     ),
     params=(
         PipelineParam("genome_size", "Estimated genome size, e.g. 5m", "5m"),
@@ -40,6 +40,7 @@ ASSEMBLY_ONT = PipelineManifest(
         "--outdir {run_dir}/results"
     ),
     container="staphb/flye:2.9.3",
+    hosted_runnable=True,
 )
 
 

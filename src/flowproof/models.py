@@ -40,6 +40,7 @@ class PipelineManifest:
     output_globs: tuple[str, ...]
     command_template: str
     container: str
+    hosted_runnable: bool = False
 
 
 @dataclass(frozen=True)

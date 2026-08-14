@@ -1,0 +1,96 @@
+{
+  "@context": "https://w3id.org/ro/crate/1.1/context",
+  "@graph": [
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "conformsTo": [
+        {
+          "@id": "https://w3id.org/ro/crate/1.1"
+        },
+        {
+          "@id": "https://w3id.org/ro/wfrun/process/0.5"
+        }
+      ],
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "FlowProof provenance for run 41d17187e85e",
+      "mainEntity": {
+        "@id": "assembly-ont"
+      },
+      "hasPart": [
+        {
+          "@id": "/usr/local/lib/python3.10/dist-packages/flowproof/_pipelines/assembly-ont/ont_sample.fastq"
+        },
+        {
+          "@id": "results/read_stats.txt"
+        }
+      ]
+    },
+    {
+      "@id": "assembly-ont",
+      "@type": [
+        "File",
+        "SoftwareSourceCode",
+        "ComputationalWorkflow"
+      ],
+      "name": "Oxford Nanopore long-read de novo assembly",
+      "version": "0.1.0",
+      "softwareRequirements": [
+        {
+          "@id": "staphb/flye:2.9.3",
+          "@type": "SoftwareApplication"
+        }
+      ]
+    },
+    {
+      "@id": "#run-41d17187e85e",
+      "@type": "CreateAction",
+      "name": "FlowProof run of assembly-ont",
+      "instrument": {
+        "@id": "assembly-ont"
+      },
+      "object": [
+        {
+          "@id": "/usr/local/lib/python3.10/dist-packages/flowproof/_pipelines/assembly-ont/ont_sample.fastq"
+        }
+      ],
+      "result": [
+        {
+          "@id": "results/read_stats.txt"
+        }
+      ],
+      "actionStatus": "http://schema.org/CompletedActionStatus"
+    },
+    {
+      "@id": "staphb/flye:2.9.3",
+      "@type": "SoftwareApplication",
+      "name": "staphb/flye:2.9.3"
+    },
+    {
+      "@id": "#tool-nextflow",
+      "@type": "SoftwareApplication",
+      "name": "nextflow",
+      "version": "version 26.04.6 build 12646"
+    },
+    {
+      "@id": "/usr/local/lib/python3.10/dist-packages/flowproof/_pipelines/assembly-ont/ont_sample.fastq",
+      "@type": "File",
+      "name": "reads",
+      "contentSize": 120020,
+      "sha256": "285a12b2d6dee106c3f7f30bf31582f6c2cd9546796997236e563888de498702"
+    },
+    {
+      "@id": "results/read_stats.txt",
+      "@type": "File",
+      "contentSize": 59,
+      "sha256": "c70ab03d12b9611d218bfa686d1e6d1788f2585d9aaab337c22de73f9d23eee2"
+    }
+  ]
+}
+

@@ -8,11 +8,14 @@ from typing import Annotated
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
+from .provenance import verify_crate
+from .registry import registry
 from .runner import MockBackend, NextflowBackend
 from .service import RunManager
 
 BASE_DIR = Path(os.environ.get("FLOWPROOF_RUNS_DIR", Path.home() / ".flowproof" / "runs"))
 _BACKEND = os.environ.get("FLOWPROOF_BACKEND", "mock").lower()
+_HOSTED = os.environ.get("FLOWPROOF_TRANSPORT", "").lower() == "http"
 
 app = FastMCP("flowproof")
 manager = RunManager(
@@ -86,6 +89,13 @@ def run_pipeline(
         Field(description="Map of parameter name to value, per describe_pipeline."),
     ] = None,
 ) -> dict:
+    if _HOSTED and not registry.get(pipeline_id).hosted_runnable:
+        raise ValueError(
+            f"'{pipeline_id}' needs local compute (large nf-core workflow plus reference data) "
+            "and does not run on the hosted demo. Run it where your data lives: "
+            "`uvx flowproof-mcp` (data stays on your machine, no token). "
+            "The hosted service runs 'assembly-ont' for real."
+        )
     record = manager.start_run(pipeline_id, inputs, params)
     return {"run_id": record.run_id, "status": record.status.value}
 
@@ -138,9 +148,11 @@ def get_provenance(
     record = manager.get(run_id)
     if not record.provenance_path:
         return {"run_id": run_id, "provenance": None}
+    provenance = json.loads(Path(record.provenance_path).read_text())
     return {
         "run_id": run_id,
-        "provenance": json.loads(Path(record.provenance_path).read_text()),
+        "provenance": provenance,
+        "receipt": verify_crate(provenance),
     }
 
 

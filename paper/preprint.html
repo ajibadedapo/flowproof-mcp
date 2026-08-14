@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>preprint</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<h1 id="flowproof-reproducible-bioinformatics-pipeline-execution-over-the-model-context-protocol-with-verifiable-provenance">FlowProof:
+reproducible bioinformatics pipeline execution over the Model Context
+Protocol with verifiable provenance</h1>
+<p><strong>Hammed Adedapo Ajibade</strong> Independent researcher
+Correspondence: ajibadehammed@gmail.com · ORCID: 0000-0003-3120-4439</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Large language model (LLM) assistants are increasingly able to reach
+scientific resources through the Model Context Protocol (MCP), and a
+recent community call has argued for MCP-enabled bioinformatics web
+services for LLM-driven discovery. The emerging ecosystem covers data
+access (MCP servers over biomedical databases) and analysis planning (AI
+agents that propose multi-step analyses), but the layer that lets an
+assistant actually <em>run</em> a pipeline and return a result that can
+be independently trusted remains underserved. We present FlowProof, an
+open-source MCP server that executes bioinformatics pipelines and
+returns their results together with a standards-based provenance record.
+Each run emits a Workflow Run RO-Crate capturing the pipeline version,
+container image, tool versions, parameters, and SHA-256 checksums of
+every input and output, so an AI-orchestrated analysis ships with the
+exact recipe and fixity information required to reproduce it. FlowProof
+separates a runner-agnostic core from its execution backends (a
+dependency-free backend for development and continuous integration, and
+a Nextflow backend for real workflows), is registry-driven so pipelines
+are added by manifest, and is drivable by any MCP-capable assistant over
+local or hosted transports. FlowProof is available on the Python Package
+Index as <code>flowproof-mcp</code> under the MIT license.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Reproducibility and provenance are longstanding requirements of
+computational biology, and the community has invested heavily in tools
+that make workflows portable and repeatable, including workflow managers
+such as Nextflow and community pipeline collections such as nf-core. A
+newer development is the use of LLM assistants to plan and carry out
+analyses on a researcher’s behalf. The Model Context Protocol has
+quickly become a common way for such assistants to interact with
+external tools and data, and MCPmed has recently called for MCP-enabled
+bioinformatics web services as a standardized semantic layer for
+LLM-driven discovery.</p>
+<p>Two layers of this ecosystem already have entrants. For <em>data
+access</em>, MCP servers expose biomedical databases so that an
+assistant can discover and retrieve datasets. For <em>analysis
+planning</em>, agent frameworks propose and sequence multi-step
+analyses. The layer that has received the least attention is
+<em>execution with trust</em>: actually running a reproducible pipeline
+and returning a result whose provenance can be independently verified.
+This matters more, not less, when a non-deterministic model is
+orchestrating the work: an assistant that “runs an analysis” is
+scientifically useful only if the result is auditable rather than a
+black box.</p>
+<p>FlowProof targets this gap. It gives an LLM a disciplined execution
+surface in which pipelines are versioned and registered, execution is
+delegated to an established workflow manager, and every run produces a
+standards-based provenance record instead of an ad hoc log.</p>
+<h2 id="implementation">Implementation</h2>
+<p><strong>MCP server and tools.</strong> FlowProof is implemented in
+Python and exposes an MCP server with six tools: list available
+pipelines, describe a pipeline’s inputs and parameters, run a pipeline,
+query a run’s status, fetch its results, and fetch its provenance. Any
+MCP-capable client can drive it; no functionality is tied to a single
+assistant or vendor.</p>
+<p><strong>Runner-agnostic core.</strong> Execution is defined by a
+backend interface. A dependency-free backend produces deterministic
+results without a workflow engine, which keeps development and
+continuous integration fast and hermetic. A Nextflow backend runs real
+pipelines. Because the two share the same interface and provenance path,
+the same code produces provenance whether a run is a lightweight
+demonstration or a full analysis.</p>
+<p><strong>Registry-driven pipelines.</strong> Pipelines are plugins
+registered by manifest (identifier, inputs, parameters, output patterns,
+command template, container). Short-read and long-read (Oxford Nanopore)
+pipelines coexist, and new pipelines are added without modifying the
+server. Command templates are populated through input validation to
+prevent argument injection from untrusted values.</p>
+<p><strong>Provenance.</strong> After a run completes, FlowProof writes
+a Workflow Run RO-Crate. The crate records the executed action, the
+workflow and its version, the tool versions (for example the exact
+Nextflow build), the container image, and File entities carrying the
+byte size and SHA-256 checksum of every input and output. Emitting
+provenance in a community standard makes it interoperable with existing
+workflow-provenance tooling rather than a bespoke format.</p>
+<p><strong>Transports and deployment.</strong> FlowProof runs locally
+over stdio, so data and compute stay on the researcher’s machine and no
+credential is required, which is the recommended mode for real data. It
+also runs as a hosted HTTP service for zero-install use. To keep a
+convenience surface from being mistaken for a production result, the
+hosted deployment runs a lightweight demonstration pipeline for real and
+refuses heavier reference-data workflows with a message directing the
+user to run them locally.</p>
+<h2 id="example-an-independently-verifiable-run">Example: an
+independently verifiable run</h2>
+<p>Running the bundled Oxford Nanopore pipeline with no arguments
+executes it on a built-in sample and returns a Workflow Run RO-Crate.
+The following entries are taken verbatim from a real run and record the
+action, the exact tool version, and SHA-256 checksums of the input and
+output:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;@id&quot;</span><span class="fu">:</span> <span class="st">&quot;#run&quot;</span><span class="fu">,</span> <span class="dt">&quot;@type&quot;</span><span class="fu">:</span> <span class="st">&quot;CreateAction&quot;</span><span class="fu">,</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;instrument&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;@id&quot;</span><span class="fu">:</span> <span class="st">&quot;assembly-ont&quot;</span> <span class="fu">},</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;object&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span> <span class="dt">&quot;@id&quot;</span><span class="fu">:</span> <span class="st">&quot;ont_sample.fastq&quot;</span> <span class="fu">}</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;result&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span> <span class="dt">&quot;@id&quot;</span><span class="fu">:</span> <span class="st">&quot;results/read_stats.txt&quot;</span> <span class="fu">}</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;actionStatus&quot;</span><span class="fu">:</span> <span class="st">&quot;http://schema.org/CompletedActionStatus&quot;</span> <span class="fu">}</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;@id&quot;</span><span class="fu">:</span> <span class="st">&quot;#tool-nextflow&quot;</span><span class="fu">,</span> <span class="dt">&quot;@type&quot;</span><span class="fu">:</span> <span class="st">&quot;SoftwareApplication&quot;</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;nextflow&quot;</span><span class="fu">,</span> <span class="dt">&quot;version&quot;</span><span class="fu">:</span> <span class="st">&quot;26.04.6&quot;</span> <span class="fu">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;@id&quot;</span><span class="fu">:</span> <span class="st">&quot;ont_sample.fastq&quot;</span><span class="fu">,</span> <span class="dt">&quot;@type&quot;</span><span class="fu">:</span> <span class="st">&quot;File&quot;</span><span class="fu">,</span> <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;reads&quot;</span><span class="fu">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;contentSize&quot;</span><span class="fu">:</span> <span class="dv">120020</span><span class="fu">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sha256&quot;</span><span class="fu">:</span> <span class="st">&quot;285a12b2d6dee106c3f7f30bf31582f6c2cd9546796997236e563888de498702&quot;</span> <span class="fu">}</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;@id&quot;</span><span class="fu">:</span> <span class="st">&quot;results/read_stats.txt&quot;</span><span class="fu">,</span> <span class="dt">&quot;@type&quot;</span><span class="fu">:</span> <span class="st">&quot;File&quot;</span><span class="fu">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;contentSize&quot;</span><span class="fu">:</span> <span class="dv">59</span><span class="fu">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sha256&quot;</span><span class="fu">:</span> <span class="st">&quot;c70ab03d12b9611d218bfa686d1e6d1788f2585d9aaab337c22de73f9d23eee2&quot;</span> <span class="fu">}</span></span></code></pre></div>
+<p>A third party can recompute the input checksum, rerun the pipeline,
+and confirm the output checksum, closing the loop between an AI-issued
+instruction and an auditable, reproducible result.</p>
+<h2 id="discussion">Discussion</h2>
+<p>FlowProof is complementary to, rather than competing with, existing
+MCP-for-bioinformatics efforts: data-access servers help an assistant
+find data, planning agents help it decide what to do, and FlowProof runs
+the resulting analysis reproducibly and returns verifiable provenance.
+It is also complementary to the broader reproducible-workflow ecosystem:
+it does not reinvent workflow execution but delegates to Nextflow and
+records provenance in a community standard, so it interoperates with
+existing pipelines and provenance consumers.</p>
+<p>The current limitations are deliberate. The hosted deployment runs
+only a lightweight pipeline for real; reference-data workflows are
+expected to run in the user’s own environment, where the data and
+compute reside. Signature verification of manifests is stubbed and
+intended for future work. The provenance model captures the information
+needed to reproduce a run and verify fixity; richer capture (for example
+per-process resource usage) is a natural extension.</p>
+<h2 id="availability">Availability</h2>
+<p>FlowProof is open source under the MIT license. It is installable
+from the Python Package Index (<code>pip install flowproof-mcp</code>;
+<code>uvx flowproof-mcp</code>) and requires Python 3.10 or later.
+Source code, documentation, and the complete example provenance crate
+are available in the project repository. The pipeline registry,
+execution backends, and provenance emitter are covered by an automated
+test suite.</p>
+<h2 id="references">References</h2>
+<ol type="1">
+<li>Flotho M, Diks IF, Flotho P, Molano LAG, Hirsch P, Keller A. MCPmed:
+a call for Model Context Protocol-enabled bioinformatics web services
+for LLM-driven discovery. <em>Briefings in Bioinformatics</em>.
+2026;27(1):bbag076.</li>
+<li>Di Tommaso P, Chatzou M, Floden EW, Barja PP, Palumbo E, Notredame
+C. Nextflow enables reproducible computational workflows. <em>Nature
+Biotechnology</em>. 2017;35(4):316–319.</li>
+<li>Ewels PA, Peltzer A, Fillinger S, Patel H, Alneberg J, Wilm A,
+Garcia MU, Di Tommaso P, Nahnsen S. The nf-core framework for
+community-curated bioinformatics pipelines. <em>Nature
+Biotechnology</em>. 2020;38(3):276–278.</li>
+<li>Leo S, Crusoe MR, Rodríguez-Navas L, et al. Recording provenance of
+workflow runs with RO-Crate. <em>PLOS ONE</em>.
+2024;19(9):e0309210.</li>
+<li>Anthropic. Model Context Protocol. 2024.
+https://modelcontextprotocol.io</li>
+<li>BioMCP: Model Context Protocol server for biomedical data access.
+2025. https://github.com/genomoncology/biomcp</li>
+<li>Huang K, et al. Biomni: A General-Purpose Biomedical AI Agent.
+<em>bioRxiv</em>. 2025.</li>
+<li>Zhou J, Zhang B, Chen X, Li H, Xu X, Chen S, Gao X. An AI Agent for
+Fully Automated Multi-Omic Analyses. <em>Advanced Science</em>.
+2024;11(44):2407094.</li>
+</ol>
+</body>
+</html>

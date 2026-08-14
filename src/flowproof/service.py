@@ -7,7 +7,7 @@ from .models import RunRecord, RunStatus
 from .provenance import write_provenance
 from .registry import Registry
 from .registry import registry as default_registry
-from .runner import MockBackend, RunBackend
+from .runner import DEFAULT_SAMPLE, MockBackend, RunBackend
 
 
 class RunManager:
@@ -31,13 +31,16 @@ class RunManager:
         manifest = self.registry.get(pipeline_id)
         resolved = {p.name: p.default for p in manifest.params if p.default is not None}
         resolved.update(params or {})
+        resolved_inputs = dict(inputs or {})
+        if pipeline_id == "assembly-ont" and not resolved_inputs.get("reads") and DEFAULT_SAMPLE:
+            resolved_inputs["reads"] = str(DEFAULT_SAMPLE)
         run_id = uuid.uuid4().hex[:12]
         run_dir = self.base_dir / run_id
         run_dir.mkdir(parents=True, exist_ok=True)
         record = RunRecord(
             run_id=run_id,
             pipeline_id=pipeline_id,
-            inputs=dict(inputs or {}),
+            inputs=resolved_inputs,
             params=resolved,
             run_dir=str(run_dir),
             status=RunStatus.RUNNING,

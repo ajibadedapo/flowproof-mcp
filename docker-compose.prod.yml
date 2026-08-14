@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     environment:
       FLOWPROOF_TRANSPORT: http
+      FLOWPROOF_BACKEND: nextflow
       FLOWPROOF_HOST: "0.0.0.0"
       FLOWPROOF_PORT: "8000"
       FLOWPROOF_RUNS_DIR: /data/runs
