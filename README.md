@@ -84,10 +84,15 @@ FLOWPROOF_TRANSPORT=http flowproof   # HTTP server on :8000
 
 | id | Read type | Analysis |
 |----|-----------|----------|
-| `variant-call-short` | short | Short-read QC to germline variant calling |
-| `assembly-ont` | long | Oxford Nanopore long-read de novo assembly |
+| `ont-read-stats` | long | Oxford Nanopore read statistics (QC); optional Flye assembly. Runs on a built-in sample if you provide no input. |
+| `variant-call-short` | short | Short-read QC to germline variant calling (nf-core/sarek) |
+| `rnaseq` | short | RNA-seq quantification: QC, trimming, alignment, gene counts (nf-core/rnaseq) |
+| `fetchngs` | short | Fetch raw reads and metadata from public archives, SRA/ENA/GEO (nf-core/fetchngs) |
+| `viralrecon` | short | Viral genome reconstruction and variant calling from amplicon data (nf-core/viralrecon) |
 
 New pipelines register by manifest; the server does not change.
+
+Try it instantly: ask your assistant to "run ont-read-stats" with no input, and FlowProof runs the bundled Oxford Nanopore sample end to end and returns a verifiable provenance crate, no data or reference genome required.
 
 ## Backends
 
@@ -107,3 +112,23 @@ PYTHONPATH=src uv run --with pytest --no-project python -m pytest tests/ -q
 ## Architecture
 
 See [DESIGN.md](./DESIGN.md).
+
+## Cite
+
+If you use FlowProof in your research, please cite the archived software release:
+
+> Ajibade, H. A. (2026). *FlowProof: reproducible bioinformatics pipeline execution over the Model Context Protocol with verifiable provenance* (v0.1.2). Zenodo. https://doi.org/10.5281/zenodo.21932977
+
+A machine-readable [`CITATION.cff`](./CITATION.cff) is included, so GitHub shows a "Cite this repository" button with BibTeX and APA formats.
+
+```bibtex
+@software{flowproof,
+  author    = {Ajibade, Hammed Adedapo},
+  title     = {FlowProof: reproducible bioinformatics pipeline execution over the Model Context Protocol with verifiable provenance},
+  year      = {2026},
+  version   = {0.1.2},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.21932977},
+  url       = {https://github.com/ajibadedapo/flowproof-mcp}
+}
+```
