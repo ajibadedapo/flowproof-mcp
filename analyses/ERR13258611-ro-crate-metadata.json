@@ -1,0 +1,104 @@
+{
+  "@context": "https://w3id.org/ro/crate/1.1/context",
+  "@graph": [
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "conformsTo": [
+        {
+          "@id": "https://w3id.org/ro/crate/1.1"
+        },
+        {
+          "@id": "https://w3id.org/ro/wfrun/process/0.5"
+        }
+      ],
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "FlowProof provenance for run 57acab8f00f8",
+      "mainEntity": {
+        "@id": "ont-read-stats"
+      },
+      "hasPart": [
+        {
+          "@id": "/Users/hammed/code/specvista-monorepo/products/flowproof/analyses/run/ERR13258611.fastq"
+        },
+        {
+          "@id": "results/read_stats.txt"
+        }
+      ]
+    },
+    {
+      "@id": "ont-read-stats",
+      "@type": [
+        "File",
+        "SoftwareSourceCode",
+        "ComputationalWorkflow"
+      ],
+      "name": "Oxford Nanopore long-read read statistics (QC); optional Flye assembly stage",
+      "version": "0.1.0",
+      "softwareRequirements": [
+        {
+          "@id": "staphb/flye:2.9.3",
+          "@type": "SoftwareApplication"
+        }
+      ]
+    },
+    {
+      "@id": "#run-57acab8f00f8",
+      "@type": "CreateAction",
+      "name": "FlowProof run of ont-read-stats",
+      "instrument": {
+        "@id": "ont-read-stats"
+      },
+      "object": [
+        {
+          "@id": "/Users/hammed/code/specvista-monorepo/products/flowproof/analyses/run/ERR13258611.fastq"
+        },
+        {
+          "@id": "#param-genome_size"
+        }
+      ],
+      "result": [
+        {
+          "@id": "results/read_stats.txt"
+        }
+      ],
+      "actionStatus": "http://schema.org/CompletedActionStatus"
+    },
+    {
+      "@id": "staphb/flye:2.9.3",
+      "@type": "SoftwareApplication",
+      "name": "staphb/flye:2.9.3"
+    },
+    {
+      "@id": "#tool-nextflow",
+      "@type": "SoftwareApplication",
+      "name": "nextflow",
+      "version": "version 26.04.6 build 12646"
+    },
+    {
+      "@id": "/Users/hammed/code/specvista-monorepo/products/flowproof/analyses/run/ERR13258611.fastq",
+      "@type": "File",
+      "name": "reads",
+      "contentSize": 289278750,
+      "sha256": "e6cf10a5a6e7910a388589e8ee6044f7c12b2a9dbc66a8ae5c6499c923078dca"
+    },
+    {
+      "@id": "results/read_stats.txt",
+      "@type": "File",
+      "contentSize": 69,
+      "sha256": "29ff14950b5562e0271988184bd6ae9773ba249176b1e0359efedf383052b2df"
+    },
+    {
+      "@id": "#param-genome_size",
+      "@type": "PropertyValue",
+      "name": "genome_size",
+      "value": "2.5m"
+    }
+  ]
+}
