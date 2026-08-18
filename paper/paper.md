@@ -42,10 +42,6 @@ FlowProof is layered so that provenance and safety do not depend on any single e
 
 FlowProof targets the trust gap that opens when a non-deterministic model orchestrates scientific computation: it lets AI assistants run real bioinformatics pipelines while emitting standards-based, independently verifiable provenance, so an AI-produced result carries the exact recipe and fixity information needed to reproduce and audit it. By making reproducibility a checkable property of an AI-driven run rather than an assertion, it offers a template for trustworthy autonomous analysis that extends beyond bioinformatics to any domain where LLM agents execute consequential computation.
 
-# AI usage disclosure
-
-AI coding assistants were used to support software development and manuscript preparation. All software design decisions, the evaluation protocol, and the reported results were directed and verified by the author, who takes full responsibility for the correctness of the software and the claims in this paper.
-
 # Evaluation
 
 The reproducibility claims are tested empirically; scripts and the protocol are in the repository. Across 20 repeated runs of the bundled long-read example on one host, and a run on a second host of a different operating system and processor architecture (macOS/arm64 and Ubuntu/x86_64), the output checksums were byte-identical. An independent verifier given only the crate recomputed and confirmed the recorded checksums and re-executed the pipeline from the crate's recorded parameters, reproducing both a default and a non-default run. Of four deliberately tampered crates, three were flagged (a mutated input, an altered recorded checksum, and an altered recorded parameter); the fourth, a swapped container reference, is undetectable for this pipeline because its default stage runs without a container, a limitation reported rather than hidden. Of 45 adversarial parameter strings submitted to the command-assembly boundary, 32 were rejected and none reached a shell interpreter (the argument vector is executed without a shell, and a canary a successful injection would create never appeared). The suite comprises 36 automated tests.
