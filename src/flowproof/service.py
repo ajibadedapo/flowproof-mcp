@@ -35,7 +35,7 @@ class RunManager:
         if pipeline_id == "ont-read-stats" and not resolved_inputs.get("reads") and DEFAULT_SAMPLE:
             resolved_inputs["reads"] = str(DEFAULT_SAMPLE)
         run_id = uuid.uuid4().hex[:12]
-        run_dir = self.base_dir / run_id
+        run_dir = (self.base_dir / run_id).resolve()
         run_dir.mkdir(parents=True, exist_ok=True)
         record = RunRecord(
             run_id=run_id,
