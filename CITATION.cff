@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use FlowProof in your research, please cite it as below."
+title: "FlowProof: reproducible bioinformatics pipeline execution over the Model Context Protocol with verifiable provenance"
+authors:
+  - family-names: Ajibade
+    given-names: Hammed Adedapo
+    orcid: "https://orcid.org/0000-0003-3120-4439"
+    affiliation: "Specvista Technology Limited"
+version: 0.1.2
+doi: 10.5281/zenodo.21932977
+date-released: 2026-08-14
+url: "https://github.com/ajibadedapo/flowproof-mcp"
+repository-code: "https://github.com/ajibadedapo/flowproof-mcp"
+license: MIT
+keywords:
+  - bioinformatics
+  - reproducibility
+  - provenance
+  - Model Context Protocol
+  - Nextflow
+  - RO-Crate
+  - workflows
+  - large language models
